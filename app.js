@@ -9,8 +9,9 @@ var io = socketIO(server);
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
 // Routing
-app.get('/', function(request, response) {
-  response.sendFile(path.join(__dirname, 'index.html'));
+app.use(express.static('public'));
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname+'/index.html'));
 });
 // Starts the server.
 server.listen(5000, function() {
