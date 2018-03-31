@@ -22,6 +22,7 @@
      @media screen and (min-width: 800px) and (min-height: 800px)  { #tetris { font-size: 2.00em; width: 750px; } #menu { width: 350px; height: 700px; } #upcoming { width: 175px; height: 175px; } #canvas { width: 350px; height: 700px; } } /* 35px chunks */
      @media screen and (min-width: 900px) and (min-height: 900px)  { #tetris { font-size: 2.25em; width: 850px; } #menu { width: 400px; height: 800px; } #upcoming { width: 200px; height: 200px; } #canvas { width: 400px; height: 800px; } } /* 40px chunks */
     </style>
+    <script src="/socket.io/socket.io.js"></script>
   </head>
 
   <body>
@@ -173,7 +174,7 @@
      function run() {
 
        showStats(); // initialize FPS counter
-       addEvents(); // attach keydown and resize events
+       //addEvents(); // attach keydown and resize events
 
        var last = now = timestamp();
        function frame() {
@@ -185,10 +186,13 @@
          requestAnimationFrame(frame, canvas);
        }
 
-       resize(); // setup all our sizing information
-       reset();  // reset the per-game variables
-       frame();  // start the first frame
-
+       //resize(); // setup all our sizing information
+       //reset();  // reset the per-game variables
+       //frame();  // start the first frame
+       var count = 0;
+       console.log("The count is " + count);
+       draw();
+       //play();
      }
 
      function showStats() {
@@ -235,6 +239,7 @@
      // GAME LOGIC
      //-------------------------------------------------------------------------
 
+     /*
      function play() { hide('start'); reset();          playing = true;  }
      function lose() { show('start'); setVisualScore(); playing = false; }
 
@@ -357,7 +362,7 @@
            setBlock(x, y, (y == 0) ? null : getBlock(x, y-1));
        }
      }
-
+  */
      //-------------------------------------------------------------------------
      // RENDERING
      //-------------------------------------------------------------------------
