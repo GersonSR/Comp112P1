@@ -30,6 +30,7 @@ app.listen(8080, function() {
  */
 var state = {};
 
+var FRAME_RATE = 1000.0/60.0;
 // Shared constants with client
 var KEY     = { ESC: 27, SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 },
     DIR     = { UP: 0, RIGHT: 1, DOWN: 2, LEFT: 3, MIN: 0, MAX: 3 },
@@ -44,8 +45,8 @@ var t = { size: 3, blocks: [0x0E40, 0x4C40, 0x4E00, 0x4640], color: 'purple' };
 var z = { size: 3, blocks: [0x0C60, 0x4C80, 0xC600, 0x2640], color: 'red'    };
 speed   = { start: 0.6, decrement: 0.005, min: 0.1 }; // how long before piece drops by 1 row (seconds)
 
-function play() { hide('start'); reset();          playing = true;  }
-function lose() { show('start'); setVisualScore(); playing = false; }
+function play() { reset(); playing = true; }
+function lose() { playing = false; }
 function setScore(n)            {state.score = n;}
 function addScore(n)            { state.score += n;}
 function clearScore()           { setScore(0); }
@@ -60,9 +61,8 @@ function setCurrentPiece(piece) { state.current = piece || randomPiece(); }
 function setNextPiece(piece)    { state.next    = piece || randomPiece(); }
 
 
-// Reset all game variables to starting defaults
-
 function reset(){
+  state = {};
   state.dt = 0;
   clearActions();
   clearBlocks();
@@ -209,5 +209,13 @@ function randomPiece() {
   return { type: type, dir: DIR.UP, x: Math.round(random(0, nx - type.size)), y: 0 };
 }
 
+// End of Game Code -----------------------------------
+setInterval(function() {
+  if (!playing) {
+    reset();
+    play();
+  }
+  update(1);
+}, FRAME_RATE);
 
 
