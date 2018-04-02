@@ -17,23 +17,11 @@ app.get('/', function (req, res) {
 server.listen(5000, function() {
   console.log('Starting server on port 5000');
 });
-
+    function timestamp()           { return new Date().getTime();                             }
     function random(min, max)      { return (min + (Math.random() * (max - min)));            }
     function randomChoice(choices) { return choices[Math.round(random(0, choices.length-1))]; }
 
-var gameState = {};
-  gameState.dt = 0;
-  gameState.blocks = 0;
-  gameState.rows = 0;
-  gameState.score = 0;
-  gameState.current = 0;
-  gameState.next = 0;
-  gameState.step = 0;
 
-
-setInterval(function() {
-  io.sockets.emit('state', state);
-}, 1000/500);
 
 // -----------------------------------------------------------------------
 //
@@ -111,8 +99,8 @@ function update(idt) {
   if (playing) {
     handle(state.actions.shift());
     state.dt = state.dt + idt;
-    if (state.dt > step) {
-      state.dt = state.dt - step;
+    if (state.dt > state.step) {
+      state.dt = state.dt - state.step;
       drop();
     }
   }
@@ -245,12 +233,19 @@ function randomPiece() {
 }
 
 // End of Game Code -----------------------------------
+var last = now = timestamp();
 setInterval(function() {
   if (!playing) {
     reset();
     play();
   }
-  update(1);
+  now = timestamp();
+  update(Math.min(1, (now - last) / 1000.0));
+  last = now;
 }, FRAME_RATE);
 
+setInterval(function() {
+  console.log(state.current);
+  io.sockets.emit('state', state);
+}, 1000/500);
 
