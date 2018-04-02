@@ -19,11 +19,10 @@ app.get('/', function (req, res) {
 server.listen((process.env.PORT || 5000), function() {
   console.log('Starting server on port 5000');
 });
-    function timestamp()           { return new Date().getTime();                             }
-    function random(min, max)      { return (min + (Math.random() * (max - min)));            }
-    function randomChoice(choices) { return choices[Math.round(random(0, choices.length-1))]; }
 
-
+function timestamp()           { return new Date().getTime();                             }
+function random(min, max)      { return (min + (Math.random() * (max - min)));            }
+function randomChoice(choices) { return choices[Math.round(random(0, choices.length-1))]; }
 
 // -----------------------------------------------------------------------
 //
@@ -31,28 +30,17 @@ server.listen((process.env.PORT || 5000), function() {
 //
 //------------------------------------------------------------------------
 
-/*
-   state contains:
-   dt = time since starting the game
-   blocks = the game board
-   rows = how many rows cleared
-   score = score of game
-   current = current piece
-   next = next piece
-   step = how long before current piece drops by 1 row
- */
-
-    var dx, dy,        // pixel size of a single tetris block
-        blocks,        // 2 dimensional array (nx*ny) representing tetris court - either empty block or occupied by a 'piece'
-        actions,       // queue of user actions (inputs)
-        playing,       // true|false - game is in progress
-        dt,            // time since starting this game
-        current,       // the current piece
-        next,          // the next piece
-        score,         // the current score
-        vscore,        // the currently displayed score (it catches up to score in small chunks - like a spinning slot machine)
-        rows,          // number of completed rows in the current game
-        step;          // how long before current piece drops by 1 row
+var dx, dy,        // pixel size of a single tetris block
+    blocks,        // 2 dimensional array (nx*ny) representing tetris court - either empty block or occupied by a 'piece'
+    actions,       // queue of user actions (inputs)
+    playing,       // true|false - game is in progress
+    dt,            // time since starting this game
+    current,       // the current piece
+    next,          // the next piece
+    score,         // the current score
+    vscore,        // the currently displayed score (it catches up to score in small chunks - like a spinning slot machine)
+    rows,          // number of completed rows in the current game
+    step;          // how long before current piece drops by 1 row
 var state = {};
 
 var FRAME_RATE = 1000.0/60.0;
@@ -86,9 +74,11 @@ function setCurrentPiece(piece) { state.current = piece || randomPiece(); }
 function setNextPiece(piece)    { state.next    = piece || randomPiece(); }
 
 
+
 function reset(){
   state = {};
   state.dt = 0;
+  state.prev_actions = [];
   clearActions();
   clearBlocks();
   clearRows();
@@ -115,6 +105,16 @@ function handle(action) {
     case DIR.UP:    rotate();        break;
     case DIR.DOWN:  drop();          break;
   }
+  remember(action);
+}
+
+// Remember only the last PREV_ACTIONS_MAX actions
+var PREV_ACTIONS_MAX = 10;
+function remember(action){
+  if (state.prev_actions.length > PREV_ACTIONS_MAX){
+    state.prev_actions.slice(-1*PREV_ACTIONS_MAX)
+  }
+  state.prev_actions.push(action);
 }
 
 function move(dir) {
@@ -248,7 +248,7 @@ setInterval(function() {
 
 setInterval(function() {
   io.sockets.emit('state', state);
-}, 1000/500);
+}, FRAME_RATE);
 
 // Capture User Input ----------------------------------
 
