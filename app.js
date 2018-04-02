@@ -245,7 +245,6 @@ setInterval(function() {
 }, FRAME_RATE);
 
 setInterval(function() {
-  console.log(state.current);
   io.sockets.emit('state', state);
 }, 1000/500);
 
