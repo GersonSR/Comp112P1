@@ -65,6 +65,9 @@
                                       }
      }
 
+
+
+
      //-------------------------------------------------------------------------
      // game constants
      //-------------------------------------------------------------------------
@@ -80,6 +83,7 @@
          nx      = 10, // width of tetris court (in blocks)
          ny      = 20, // height of tetris court (in blocks)
          nu      = 5;  // width/height of upcoming preview (in blocks)
+         socket  = io();
 
      //-------------------------------------------------------------------------
      // game variables (initialized during reset)
@@ -125,6 +129,9 @@
      // do the bit manipulation and iterate through each
      // occupied block (x,y) for a given piece
      //------------------------------------------------
+
+
+
      function eachblock(type, x, y, dir, fn) {
        var bit, result, row = 0, col = 0, blocks = type.blocks[dir];
        for(bit = 0x8000 ; bit > 0 ; bit = bit >> 1) {
@@ -189,8 +196,6 @@
        //resize(); // setup all our sizing information
        //reset();  // reset the per-game variables
        //frame();  // start the first frame
-       var count = 0;
-       console.log("The count is " + count);
        draw();
        //play();
      }
@@ -239,7 +244,7 @@
      // GAME LOGIC
      //-------------------------------------------------------------------------
 
-     /*
+     
      function play() { hide('start'); reset();          playing = true;  }
      function lose() { show('start'); setVisualScore(); playing = false; }
 
@@ -256,7 +261,7 @@
      function clearActions()         { actions = []; }
      function setCurrentPiece(piece) { current = piece || randomPiece(); invalidate();     }
      function setNextPiece(piece)    { next    = piece || randomPiece(); invalidateNext(); }
-
+     /*
      function reset() {
        dt = 0;
        clearActions();
@@ -266,7 +271,7 @@
        setCurrentPiece(next);
        setNextPiece();
      }
-
+    */
      function update(idt) {
        if (playing) {
          if (vscore < score)
@@ -279,6 +284,7 @@
          }
        }
      }
+     /*
 
      function handle(action) {
        switch(action) {
@@ -375,6 +381,7 @@
      function invalidateRows()     { invalid.rows   = true; }
 
      function draw() {
+
        ctx.save();
        ctx.lineWidth = 1;
        ctx.translate(0.5, 0.5); // for crisp 1px black lines
@@ -445,10 +452,23 @@
      //-------------------------------------------------------------------------
      // FINALLY, lets run the game
      //-------------------------------------------------------------------------
+      socket.on('state', function(data) {
+        dt = data.dt;
+        blocks = data.blocks;
+        rows = data.rows;
+        score = data.score;
+        current = data.current;
+        next = data.next;
+        step = data.step;
+        invalidate();
+        invalidateNext();
+        invalidateRows();
+        invalidateScore();
+        draw();
+      });
 
      run();
 
     </script>
-    <script src="/static/game.js"></script>
   </body>
 </html>

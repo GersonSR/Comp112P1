@@ -18,22 +18,23 @@ server.listen(5000, function() {
   console.log('Starting server on port 5000');
 });
 
-<<<<<<< HEAD
-var gameState = {};
-	gameState['dt'] = 0;
-	gameState['blocks'] = 0;
-	gameState['rows'] = 0;
-	gameState['score'] = 0;
-	gameState['current'] = 0;
-	gameState['next'] = 0;
-	gameState['step'] = 0;
+    function random(min, max)      { return (min + (Math.random() * (max - min)));            }
+    function randomChoice(choices) { return choices[Math.round(random(0, choices.length-1))]; }
 
-console.log(gameState);
+var gameState = {};
+  gameState.dt = 0;
+  gameState.blocks = 0;
+  gameState.rows = 0;
+  gameState.score = 0;
+  gameState.current = 0;
+  gameState.next = 0;
+  gameState.step = 0;
+
 
 setInterval(function() {
-  io.sockets.emit('state', gameState);
+  console.log(state);
+  io.sockets.emit('state', state);
 }, 1000 / 60);
-=======
 
 // -----------------------------------------------------------------------
 //
@@ -51,6 +52,18 @@ setInterval(function() {
    next = next piece
    step = how long before current piece drops by 1 row
  */
+
+    var dx, dy,        // pixel size of a single tetris block
+        blocks,        // 2 dimensional array (nx*ny) representing tetris court - either empty block or occupied by a 'piece'
+        actions,       // queue of user actions (inputs)
+        playing,       // true|false - game is in progress
+        dt,            // time since starting this game
+        current,       // the current piece
+        next,          // the next piece
+        score,         // the current score
+        vscore,        // the currently displayed score (it catches up to score in small chunks - like a spinning slot machine)
+        rows,          // number of completed rows in the current game
+        step;          // how long before current piece drops by 1 row
 var state = {};
 
 var FRAME_RATE = 1000.0/60.0;
@@ -242,4 +255,3 @@ setInterval(function() {
 }, FRAME_RATE);
 
 
->>>>>>> 76821b20c084737051267f8d0a52c910cfa6ce42

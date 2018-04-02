@@ -1,4 +1,4 @@
 var socket = io();
 socket.on('state', function(data) {
-  console.log(data);
+  console.log("Game state is " + data);
 });
