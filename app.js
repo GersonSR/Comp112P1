@@ -32,9 +32,8 @@ var gameState = {};
 
 
 setInterval(function() {
-  console.log(state);
   io.sockets.emit('state', state);
-}, 1000 / 60);
+}, 1000/500);
 
 // -----------------------------------------------------------------------
 //

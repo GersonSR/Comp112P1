@@ -193,8 +193,8 @@
          requestAnimationFrame(frame, canvas);
        }
 
-       //resize(); // setup all our sizing information
-       //reset();  // reset the per-game variables
+       resize(); // setup all our sizing information
+       reset();  // reset the per-game variables
        //frame();  // start the first frame
        draw();
        //play();
@@ -220,7 +220,7 @@
        invalidate();
        invalidateNext();
      }
-
+     /*
      function keydown(ev) {
        var handled = false;
        if (playing) {
@@ -239,6 +239,7 @@
        if (handled)
          ev.preventDefault(); // prevent arrow keys from scrolling the page (supported in IE9+ and all other browsers)
      }
+     */
 
      //-------------------------------------------------------------------------
      // GAME LOGIC
@@ -261,7 +262,7 @@
      function clearActions()         { actions = []; }
      function setCurrentPiece(piece) { current = piece || randomPiece(); invalidate();     }
      function setNextPiece(piece)    { next    = piece || randomPiece(); invalidateNext(); }
-     /*
+     
      function reset() {
        dt = 0;
        clearActions();
@@ -271,7 +272,7 @@
        setCurrentPiece(next);
        setNextPiece();
      }
-    */
+    /*
      function update(idt) {
        if (playing) {
          if (vscore < score)
@@ -395,8 +396,9 @@
      function drawCourt() {
        if (invalid.court) {
          ctx.clearRect(0, 0, canvas.width, canvas.height);
-         if (playing)
+         if (playing){
            drawPiece(ctx, current.type, current.x, current.y, current.dir);
+         }
          var x, y, block;
          for(y = 0 ; y < ny ; y++) {
            for (x = 0 ; x < nx ; x++) {
@@ -452,6 +454,15 @@
      //-------------------------------------------------------------------------
      // FINALLY, lets run the game
      //-------------------------------------------------------------------------
+       var last = now = timestamp();
+       function frame() {
+         now = timestamp();
+         //update(Math.min(1, (now - last) / 1000.0)); // using requestAnimationFrame have to be able to handle large delta's caused when it 'hibernates' in a background or non-visible tab
+         draw();
+         stats.update();
+         last = now;
+         requestAnimationFrame(frame, canvas);
+       }
       socket.on('state', function(data) {
         dt = data.dt;
         blocks = data.blocks;
@@ -460,13 +471,14 @@
         current = data.current;
         next = data.next;
         step = data.step;
+        //console.log(blocks);
         invalidate();
         invalidateNext();
         invalidateRows();
         invalidateScore();
-        draw();
+        frame();
       });
-
+      playing = true;
      run();
 
     </script>
