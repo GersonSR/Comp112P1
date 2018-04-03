@@ -181,7 +181,7 @@
      function run() {
 
        showStats(); // initialize FPS counter
-       //addEvents(); // attach keydown and resize events
+       addEvents(); // attach keydown and resize events
 
        var last = now = timestamp();
        function frame() {
@@ -206,7 +206,7 @@
      }
 
      function addEvents() {
-       document.addEventListener('keydown', keydown, false);
+       document.addEventListener('keydown', keydown);
        window.addEventListener('resize', resize, false);
      }
 
