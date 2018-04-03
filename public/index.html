@@ -220,6 +220,20 @@
        invalidate();
        invalidateNext();
      }
+
+     function keydown(ev) {
+      var handled = false;
+      if (playing) {
+         switch(ev.keyCode) {
+           case KEY.LEFT:  console.log("Left Key Pressed");  socket.emit('keyPress', 3);  handled = true; break;
+           case KEY.RIGHT:  console.log("Right Key Pressed");  socket.emit('keyPress', 1); handled = true; break;
+           case KEY.UP:     console.log("Up Key Pressed");  socket.emit('keyPress', 0);  handled = true; break;
+           case KEY.DOWN:   console.log("Down Key Pressed");  socket.emit('keyPress', 2);  handled = true; break;
+         }
+       }
+       if (handled)
+         ev.preventDefault(); // prevent arrow keys from scrolling the page (supported in IE9+ and all other browsers)       
+     }
      /*
      function keydown(ev) {
        var handled = false;
@@ -481,7 +495,29 @@
      playing = true;
      window.setTimeout(frame, 1000/60);
      run();
-
+    </script>
+    <script type="text/javascript">
+      var socket = io();
+      document.addEventListener("keydown", function(event) {
+          switch (event.keyCode) {
+            case 37: // Left
+              console.log("Left Key Pressed");
+              socket.emit('keyPress', 3);
+              break;
+            case 38: // Up
+              console.log("Up Key Pressed");
+              socket.emit('keyPress', 0);
+              break;
+            case 39: // Right
+              console.log("Right Key Pressed");
+              socket.emit('keyPress', 1);
+              break;
+            case 40: // Down
+              console.log("Down Key Pressed");
+              socket.emit('keyPress', 2);
+              break;
+          }
+        });
     </script>
   </body>
 </html>

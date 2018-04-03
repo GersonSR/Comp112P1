@@ -250,3 +250,11 @@ setInterval(function() {
   io.sockets.emit('state', state);
 }, 1000/500);
 
+// Capture User Input ----------------------------------
+
+io.on('connection', function(socket) {
+	socket.on('keyPress', function(data) {
+		var keyNum = data;
+		console.log(keyNum);
+	});
+});
