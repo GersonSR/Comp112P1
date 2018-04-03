@@ -33,6 +33,7 @@
         <p><canvas id="upcoming"></canvas></p>
         <p>score <span id="score">00000</span></p>
         <p>rows <span id="rows">0</span></p>
+        <p>prev actions <canvas id="prev_actions"></canvas></p>
       </div>
       <canvas id="canvas">
         Sorry, this example cannot be run because your browser does not support the &lt;canvas&gt; element
@@ -79,10 +80,13 @@
          ctx     = canvas.getContext('2d'),
          ucanvas = get('upcoming'),
          uctx    = ucanvas.getContext('2d'),
+         pcanvas = get('prev_actions'),
+         pctx    = pcanvas.getContext('2d'),
          speed   = { start: 0.6, decrement: 0.005, min: 0.1 }, // how long before piece drops by 1 row (seconds)
          nx      = 10, // width of tetris court (in blocks)
          ny      = 20, // height of tetris court (in blocks)
-         nu      = 5;  // width/height of upcoming preview (in blocks)
+         nu      = 5,  // width/height of upcoming preview (in blocks)
+         keyx = 10;
          socket  = io();
 
      //-------------------------------------------------------------------------
@@ -99,7 +103,8 @@
          score,         // the current score
          vscore,        // the currently displayed score (it catches up to score in small chunks - like a spinning slot machine)
          rows,          // number of completed rows in the current game
-         step;          // how long before current piece drops by 1 row
+         step,          // how long before current piece drops by 1 row
+         prev_actions;  // previously inputted actions
 
      //-------------------------------------------------------------------------
      // tetris pieces
@@ -215,6 +220,8 @@
        canvas.height  = canvas.clientHeight; // (ditto)
        ucanvas.width  = ucanvas.clientWidth;
        ucanvas.height = ucanvas.clientHeight;
+       pcanvas.width = pcanvas.clientWidth;
+       pcanvas.height = pcanvas.clientHeight;
        dx = canvas.width  / nx; // pixel size of a single tetris block
        dy = canvas.height / ny; // (ditto)
        invalidate();
@@ -258,8 +265,6 @@
      //-------------------------------------------------------------------------
      // GAME LOGIC
      //-------------------------------------------------------------------------
-
-     
      function play() { hide('start'); reset();          playing = true;  }
      function lose() { show('start'); setVisualScore(); playing = false; }
 
@@ -276,7 +281,8 @@
      function clearActions()         { actions = []; }
      function setCurrentPiece(piece) { current = piece || randomPiece(); invalidate();     }
      function setNextPiece(piece)    { next    = piece || randomPiece(); invalidateNext(); }
-     
+
+
      function reset() {
        dt = 0;
        clearActions();
@@ -396,7 +402,6 @@
      function invalidateRows()     { invalid.rows   = true; }
 
      function draw() {
-
        ctx.save();
        ctx.lineWidth = 1;
        ctx.translate(0.5, 0.5); // for crisp 1px black lines
@@ -404,8 +409,46 @@
        drawNext();
        drawScore();
        drawRows();
+       drawActions();
        ctx.restore();
      }
+
+
+var kdx = 50; // side length of key in px
+     function drawActions(){
+       pctx.clearRect(0, 0, pcanvas.width, pcanvas.height);
+       var i;
+       // Number of keys we can fit on screen
+       len = pcanvas.width/kdx;
+       for (i = 0; i < len; i++){
+         drawKey(pctx, i, prev_actions[i]);
+       }
+     }
+
+
+function drawKey(ctx, i, action){
+  ctx.fillStyle = 'white'; // white
+  ctx.fillRect(i*kdx, 0, kdx, kdx);
+  ctx.strokeRect(i*kdx, 0, kdx, kdx);
+  ctx.fillStyle = "red";
+  ctx.font = "18px Arial";
+  ctx.textAlign = "center";
+  var c;
+  switch(action) {
+    case DIR.LEFT:  c = 8592;  break;
+    case DIR.RIGHT: c = 8594;  break;
+    case DIR.UP:    c = 8593;  break;
+    case DIR.DOWN:  c = 8595;  break;
+  }
+
+  ctx.fillText(String.fromCharCode(c), (i*kdx) + kdx/2, kdx/2);
+}
+
+function drawBlock(ctx, x, y, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x*dx, y*dy, dx, dy);
+  ctx.strokeRect(x*dx, y*dy, dx, dy)
+}
 
      function drawCourt() {
        if (invalid.court) {
@@ -485,7 +528,7 @@
         current = data.current;
         next = data.next;
         step = data.step;
-        //console.log(blocks);
+        prev_actions = data.prev_actions;
         invalidate();
         invalidateNext();
         invalidateRows();
