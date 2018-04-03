@@ -100,19 +100,18 @@ function update(idt) {
 
 function handle(action) {
   switch(action) {
-    case DIR.LEFT:  move(DIR.LEFT);  break;
-    case DIR.RIGHT: move(DIR.RIGHT); break;
-    case DIR.UP:    rotate();        break;
-    case DIR.DOWN:  drop();          break;
+    case DIR.LEFT:  move(DIR.LEFT);  remember(action); break;
+    case DIR.RIGHT: move(DIR.RIGHT); remember(action); break;
+    case DIR.UP:    rotate();        remember(action); break;
+    case DIR.DOWN:  drop();          remember(action); break;
   }
-  remember(action);
 }
 
 // Remember only the last PREV_ACTIONS_MAX actions
-var PREV_ACTIONS_MAX = 10;
+var PREV_ACTIONS_MAX = 6;
 function remember(action){
   if (state.prev_actions.length > PREV_ACTIONS_MAX){
-    state.prev_actions.slice(-1*PREV_ACTIONS_MAX)
+    state.prev_actions.shift();
   }
   state.prev_actions.push(action);
 }
@@ -255,7 +254,6 @@ setInterval(function() {
 io.on('connection', function(socket) {
 	socket.on('keyPress', function(data) {
 		var keyNum = data;
-		// console.log(keyNum);
 		state.actions.push(keyNum);
 	});
 });

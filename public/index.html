@@ -186,7 +186,7 @@
      function run() {
 
        showStats(); // initialize FPS counter
-       //addEvents(); // attach keydown and resize events
+       addEvents(); // attach keydown and resize events
 
        var last = now = timestamp();
        function frame() {
@@ -229,17 +229,17 @@
      }
 
      function keydown(ev) {
-      var handled = false;
-      if (playing) {
+       var handled = false;
+       if (playing) {
          switch(ev.keyCode) {
-           case KEY.LEFT:  console.log("Left Key Pressed");  socket.emit('keyPress', 3);  handled = true; break;
-           case KEY.RIGHT:  console.log("Right Key Pressed");  socket.emit('keyPress', 1); handled = true; break;
-           case KEY.UP:     console.log("Up Key Pressed");  socket.emit('keyPress', 0);  handled = true; break;
-           case KEY.DOWN:   console.log("Down Key Pressed");  socket.emit('keyPress', 2);  handled = true; break;
+           case KEY.LEFT:  socket.emit('keyPress', DIR.LEFT);  handled = true; break;
+           case KEY.RIGHT: socket.emit('keyPress', DIR.RIGHT); handled = true; break;
+           case KEY.UP:    socket.emit('keyPress', DIR.UP);  handled = true; break;
+           case KEY.DOWN:  socket.emit('keyPress', DIR.DOWN);  handled = true; break;
          }
        }
        if (handled)
-         ev.preventDefault(); // prevent arrow keys from scrolling the page (supported in IE9+ and all other browsers)       
+         ev.preventDefault(); // prevent arrow keys from scrolling the page (supported in IE9+ and all other browsers) 
      }
      /*
      function keydown(ev) {
@@ -535,7 +535,7 @@ function drawBlock(ctx, x, y, color) {
         invalidateScore();
       });
 
-     playing = true;
+     play();
      window.setTimeout(frame, 1000/60);
      run();
     </script>
