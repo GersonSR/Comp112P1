@@ -108,7 +108,7 @@ function handle(action) {
 }
 
 // Remember only the last PREV_ACTIONS_MAX actions
-var PREV_ACTIONS_MAX = 6;
+var PREV_ACTIONS_MAX = 10;
 function remember(action){
   if (state.prev_actions.length > PREV_ACTIONS_MAX){
     state.prev_actions.shift();
