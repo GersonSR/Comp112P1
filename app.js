@@ -145,7 +145,7 @@ function drop() {
     addScore(10);
     dropPiece();
     removeLines();
-    setCurrentPiece(next);
+    setCurrentPiece(state.next);
     setNextPiece(randomPiece());
     clearActions();
     if (occupied(state.current.type, state.current.x, state.current.y, state.current.dir)) {
