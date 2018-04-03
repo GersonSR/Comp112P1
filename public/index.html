@@ -419,7 +419,7 @@ var kdx = 50; // side length of key in px
        pctx.clearRect(0, 0, pcanvas.width, pcanvas.height);
        var i;
        // Number of keys we can fit on screen
-       len = pcanvas.width/kdx;
+       len = Math.min(pcanvas.width/kdx, prev_actions.length);
        for (i = 0; i < len; i++){
          drawKey(pctx, i, prev_actions[i]);
        }
