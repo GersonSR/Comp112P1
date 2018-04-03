@@ -60,7 +60,7 @@ speed   = { start: 0.6, decrement: 0.005, min: 0.1 }; // how long before piece d
 
 function play() { reset(); playing = true; }
 function lose() { playing = false; }
-function setScore(n)            {state.score = n;}
+function setScore(n)            { state.score = n;}
 function addScore(n)            { state.score += n;}
 function clearScore()           { setScore(0); }
 function clearRows()            { setRows(0); }
