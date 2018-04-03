@@ -496,28 +496,5 @@
      window.setTimeout(frame, 1000/60);
      run();
     </script>
-    <script type="text/javascript">
-      var socket = io();
-      document.addEventListener("keydown", function(event) {
-          switch (event.keyCode) {
-            case 37: // Left
-              console.log("Left Key Pressed");
-              socket.emit('keyPress', 3);
-              break;
-            case 38: // Up
-              console.log("Up Key Pressed");
-              socket.emit('keyPress', 0);
-              break;
-            case 39: // Right
-              console.log("Right Key Pressed");
-              socket.emit('keyPress', 1);
-              break;
-            case 40: // Down
-              console.log("Down Key Pressed");
-              socket.emit('keyPress', 2);
-              break;
-          }
-        });
-    </script>
   </body>
 </html>

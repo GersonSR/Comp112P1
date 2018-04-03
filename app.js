@@ -255,6 +255,7 @@ setInterval(function() {
 io.on('connection', function(socket) {
 	socket.on('keyPress', function(data) {
 		var keyNum = data;
-		console.log(keyNum);
+		// console.log(keyNum);
+		state.actions.push(keyNum);
 	});
 });
