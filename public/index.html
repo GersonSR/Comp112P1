@@ -236,6 +236,8 @@
                case KEY.DOWN:  socket.emit('keyPress', DIR.DOWN);  handled = true; break;
            }
            last_press = curr_press;
+         }else{
+            handled = true;
          }
        }
        if (handled)
