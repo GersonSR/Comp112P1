@@ -1,3 +1,4 @@
+
      //-------------------------------------------------------------------------
      // base helper methods
      //-------------------------------------------------------------------------
@@ -42,7 +43,8 @@
          ny      = 20, // height of tetris court (in blocks)
          nu      = 5,  // width/height of upcoming preview (in blocks)
          nkx     = 10; // number of previous actions
-     socket  = io();
+         last_press = 0;
+         socket  = io();
 
      //-------------------------------------------------------------------------
      // game variables (initialized during reset)
@@ -145,14 +147,7 @@
        addEvents(); // attach keydown and resize events
 
        var last = now = timestamp();
-       function frame() {
-         now = timestamp();
-         update(Math.min(1, (now - last) / 1000.0)); // using requestAnimationFrame have to be able to handle large delta's caused when it 'hibernates' in a background or non-visible tab
-         draw();
-         stats.update();
-         last = now;
-         requestAnimationFrame(frame, canvas);
-       }
+
 
        resize(); // setup all our sizing information
        reset();  // reset the per-game variables
@@ -188,11 +183,17 @@
      function keydown(ev) {
        var handled = false;
        if (playing) {
-         switch(ev.keyCode) {
-           case KEY.LEFT:  socket.emit('keyPress', DIR.LEFT);  handled = true; break;
-           case KEY.RIGHT: socket.emit('keyPress', DIR.RIGHT); handled = true; break;
-           case KEY.UP:    socket.emit('keyPress', DIR.UP);  handled = true; break;
-           case KEY.DOWN:  socket.emit('keyPress', DIR.DOWN);  handled = true; break;
+         var curr_press = Date.now();
+         if(curr_press - last_press > 100){
+           switch(ev.keyCode) {
+               case KEY.LEFT:  socket.emit('keyPress', DIR.LEFT);  handled = true; break;
+               case KEY.RIGHT: socket.emit('keyPress', DIR.RIGHT); handled = true; break;
+               case KEY.UP:    socket.emit('keyPress', DIR.UP);  handled = true; break;
+               case KEY.DOWN:  socket.emit('keyPress', DIR.DOWN);  handled = true; break;
+           }
+           last_press = curr_press;
+         }else{
+            handled = true;
          }
        }
        if (handled)
@@ -378,9 +379,8 @@
      });
 
      socket.on('restart', function(){
-        clearScore();
-        setVisualScore(0);
-        invalidScore();
+        setScore(0);
+        invalidate();
         draw();
      });
      
