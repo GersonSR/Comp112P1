@@ -228,7 +228,7 @@
        var handled = false;
        if (playing) {
          var curr_press = Date.now();
-         if(curr_press - last_press > 1){
+         if(curr_press - last_press > 100){
            switch(ev.keyCode) {
                case KEY.LEFT:  socket.emit('keyPress', DIR.LEFT);  handled = true; break;
                case KEY.RIGHT: socket.emit('keyPress', DIR.RIGHT); handled = true; break;
