@@ -59,7 +59,10 @@ var z = { size: 3, blocks: [0x0C60, 0x4C80, 0xC600, 0x2640], color: 'red'    };
 speed   = { start: 0.6, decrement: 0.005, min: 0.1 }; // how long before piece drops by 1 row (seconds)
 
 function play() { reset(); playing = true; }
-function lose() { playing = false; }
+function lose() { 
+  playing = false; 
+  io.sockets.emit('restart');
+}
 function setScore(n)            { state.score = n;}
 function addScore(n)            { state.score += n;}
 function clearScore()           { setScore(0); }

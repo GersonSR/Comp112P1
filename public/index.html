@@ -422,6 +422,14 @@
        invalidateScore();
      });
 
+     socket.on('restart', function(){
+        clearScore();
+        setVisualScore(0);
+        invalidScore();
+        draw();
+     });
+     
+
      play();
      window.setTimeout(frame, 1000/60);
      run();
