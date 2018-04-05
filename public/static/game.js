@@ -45,6 +45,8 @@
          nkx     = 10; // number of previous actions
          last_press = 0;
          socket  = io();
+         music = document.getElementById("TetrisMusic");
+         mute_button = document.getElementById("muteButton");
 
      //-------------------------------------------------------------------------
      // game variables (initialized during reset)
@@ -164,6 +166,7 @@
      function addEvents() {
        document.addEventListener('keydown', keydown);
        window.addEventListener('resize', resize, false);
+       mute_button.addEventListener('click', mute)
      }
 
      function resize(event) {
@@ -178,6 +181,14 @@
        kdx = pcanvas.width / nkx; // pixel size of key in prev actions
        invalidate();
        invalidateNext();
+     }
+
+     function mute(){
+       if(music.muted == true){
+         music.muted = false;
+       } else {
+         music.muted = true;
+       }
      }
 
      function keydown(ev) {
@@ -388,3 +399,4 @@
      play();
      window.setTimeout(frame, 1000/60);
      run();
+
